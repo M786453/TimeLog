@@ -1,0 +1,33 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: black;
+}
+
+#header{
+    text-align: center;
+    font-size: 5em;
+    color: gray;
+}
+
+#links{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+}
+
+a{
+    text-decoration: none;
+    color: gray;
+    font-size: 2em;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(26, 25, 25);
+    text-align: center;
+}
+
+a:hover{
+    background-color: rgb(39, 39, 39);
+}
