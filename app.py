@@ -7,6 +7,11 @@ def home():
 
     return render_template('index.html')
 
+@app.route('/log')
+def log():
+    
+    return render_template('log.html')
+
 if __name__ == "__main__":
 
     app.run(debug=True)

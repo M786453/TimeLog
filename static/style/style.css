@@ -31,3 +31,34 @@ a{
 a:hover{
     background-color: rgb(39, 39, 39);
 }
+
+
+/** LOG **/
+
+#log{
+    display: grid;
+    color: gray;
+    height: 50vh;
+    justify-content: center;
+    align-items: center;
+}
+
+#stopwatch{
+    font-size: 3em;
+    border: 4px solid gray;
+    text-align: center;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.log-actions{
+    display: flex;
+    justify-content: center;
+}
+
+#title{
+    text-align: center;
+    font-size: x-large;
+}
+
+/** LOG **/
