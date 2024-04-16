@@ -61,4 +61,13 @@ a:hover{
     font-size: x-large;
 }
 
+.fas{
+    color: gray;border: 2px solid gray;border-radius: 5px;padding: 5px;margin-right: 10px;
+}
+.fas:hover{
+    background-color: gray;
+    color: black;
+    cursor: pointer;
+}
+
 /** LOG **/
