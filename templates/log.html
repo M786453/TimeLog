@@ -11,6 +11,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css" integrity="sha256-46qynGAkLSFpVbEBog43gvNhfrOj+BmwXdxFgVK/Kvc=" crossorigin="anonymous" /> 
 
     <!-- STYLE -->
+
+    <!-- SCRIPT -->
+
+        <script src="../static/scripts/log.js"></script>
+
+    <!-- SCRIPT -->
 </head>
 <body>
     
@@ -26,12 +32,12 @@
 
             <div id="title">Dummy Task</div>
 
-            <div id="stopwatch">00:00:00</div>
+            <div id="display">00:00:00</div>
 
             <div class="log-actions">
-                <i class="fas fa-stop" id="btnStop"></i>
-                <i class="fas fa-play" id="btnPlay"></i>
-                <i class="fas fa-check" id="btnDone"></i>
+                <i class="fas fa-stop" id="btnStop" onclick="stopStopwatch()"></i>
+                <i class="fas fa-play" id="btnPlay" onclick="startStopwatch()"></i>
+                <i class="fas fa-check" id="btnDone" onclick="resetStopwatch()"></i>
             </div>
             
         </div>
