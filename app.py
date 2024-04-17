@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -7,10 +7,15 @@ def home():
 
     return render_template('index.html')
 
-@app.route('/log')
-def log():
+@app.route('/insert', methods = ['POST', 'GET'])
+def insert_task():
+
+    if 'task_name' in request.args:
+        task_name = request.args.get('task_name')
+        return render_template('log.html', task_name = task_name)
     
-    return render_template('log.html')
+    return render_template('task.html')
+   
 
 if __name__ == "__main__":
 

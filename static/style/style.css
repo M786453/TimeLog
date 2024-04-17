@@ -32,6 +32,27 @@ a:hover{
     background-color: rgb(39, 39, 39);
 }
 
+/** INSERT TASK **/
+
+form{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
+
+input{
+    text-decoration: none;
+    color: gray;
+    font-size: 2em;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgb(26, 25, 25);
+    text-align: center;
+    margin: 0;
+}
+
+
+/** INSERT TASK **/
 
 /** LOG **/
 
@@ -65,11 +86,6 @@ a:hover{
     color: black !important;
     background-color: gray; 
 }
-
-/* .fas:visited{
-    background-color: gray;
-    color: black;
-} */
 
 .fas{
     color: gray;border: 2px solid gray;border-radius: 5px;padding: 5px;margin-right: 10px;
