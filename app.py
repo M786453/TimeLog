@@ -24,6 +24,37 @@ def create_task_table():
     conn.execute('CREATE TABLE IF NOT EXISTS Task_History(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT , duration REAL, date DATE)')
     conn.commit()
     conn.close()
+
+def get_task_history(mode):
+
+    conn = sqlite3.connect('taskHistory.db')
+
+    conn.row_factory = sqlite3.Row
+    
+    cur = conn.cursor()
+
+    if mode == 'Daily':
+
+        current_date = datetime.now().date()
+
+        cur.execute("SELECT name, duration FROM Task_History WHERE date = ?", (current_date, ))
+        
+    
+    elif mode == "Monthly":
+
+        current_year_month = datetime.now().strftime('%Y-%m')
+
+        cur.execute("SELECT name, duration FROM Task_History WHERE date LIKE ?", (f'{current_year_month}%',))
+
+    elif mode == "Yearly":
+
+        current_year = datetime.now().date().year
+
+        cur.execute("SELECT name, duration FROM Task_History WHERE date LIKE ?", (f'{current_year}%',))
+
+    tasks = cur.fetchall()
+
+    return tasks
     
 @app.route('/')
 def home():
@@ -46,13 +77,15 @@ def insert_task():
    
 @app.route('/task_done')
 def task_done():
+    
     if 'name' in request.args and 'duration' in request.args:
         conn = sqlite3.connect('taskHistory.db')
         cur = conn.cursor()
         cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , request.args['duration'], datetime.now().date()) )
         conn.commit()
         conn.close()
-    return "task_done"
+    
+    return redirect(url_for('home'))
 
 
 @app.route('/daily')
@@ -81,8 +114,6 @@ def yearly_history():
     time_history = [12, 19, 3, 5, 2]
     
     return render_template('history.html', status = 'Yearly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
-
-
 
 if __name__ == "__main__":
     create_task_table()
