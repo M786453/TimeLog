@@ -98,3 +98,28 @@ input{
 }
 
 /** LOG **/
+
+/** HISTORY **/
+
+.chart_area{
+    display: flex;
+    justify-content: center;
+}
+
+.chart_actions_div{
+    display: flex;
+    justify-content: center;
+}
+
+.chart_action{
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: medium;
+}
+
+#chart{
+    height: 300px !important;
+}
+
+
+/** HISTORY **/
