@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
+from datetime import datetime
+
 app = Flask(__name__)
 
 bg_colors = [
@@ -16,10 +18,10 @@ borders = [
               'rgba(75, 192, 192, 1)',
               'rgba(153, 102, 255, 1)'
             ]
+
 def create_task_table():
     conn = sqlite3.connect('taskHistory.db')
-    conn.execute('CREATE TABLE IF NOT EXISTS Task_History(task_name TEXT , task_duration INTEGER)')
-
+    conn.execute('CREATE TABLE IF NOT EXISTS Task_History(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT , duration REAL, date DATE)')
     conn.commit()
     conn.close()
     
@@ -44,10 +46,10 @@ def insert_task():
    
 @app.route('/task_done')
 def task_done():
-    if 'task_name' in request.args and 'task_duration' in request.args:
+    if 'name' in request.args and 'duration' in request.args:
         conn = sqlite3.connect('taskHistory.db')
         cur = conn.cursor()
-        cur.execute('INSERT INTO Task_History (task_name, task_duration) values (?,?)' , (request.args['task_name'] , request.args['task_duration']) )
+        cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , request.args['duration'], datetime.now().date()) )
         conn.commit()
         conn.close()
     return "task_done"
