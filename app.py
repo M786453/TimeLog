@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-
+import sqlite3
 app = Flask(__name__)
 
 bg_colors = [
@@ -16,7 +16,13 @@ borders = [
               'rgba(75, 192, 192, 1)',
               'rgba(153, 102, 255, 1)'
             ]
+def create_task_table():
+    conn = sqlite3.connect('taskHistory.db')
+    conn.execute('CREATE TABLE IF NOT EXISTS Task_History(task_name TEXT , task_duration INTEGER)')
 
+    conn.commit()
+    conn.close()
+    
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -34,6 +40,17 @@ def insert_task():
         return render_template('log.html', task_name = task_name)
     
     return render_template('task.html')
+
+   
+@app.route('/task_done')
+def task_done():
+    if 'task_name' in request.args and 'task_duration' in request.args:
+        conn = sqlite3.connect('taskHistory.db')
+        cur = conn.cursor()
+        cur.execute('INSERT INTO Task_History (task_name, task_duration) values (?,?)' , (request.args['task_name'] , request.args['task_duration']) )
+        conn.commit()
+        conn.close()
+    return "task_done"
 
 
 @app.route('/daily')
@@ -63,6 +80,8 @@ def yearly_history():
     
     return render_template('history.html', status = 'Yearly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
 
-if __name__ == "__main__":
 
+
+if __name__ == "__main__":
+    create_task_table()
     app.run(debug=True)
