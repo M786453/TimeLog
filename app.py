@@ -52,9 +52,21 @@ def get_task_history(mode):
 
         cur.execute("SELECT name, duration FROM Task_History WHERE date LIKE ?", (f'{current_year}%',))
 
-    tasks = cur.fetchall()
+    # Data segregation
 
-    return tasks
+    tasks_data = cur.fetchall()
+
+    tasks = []
+
+    time_history = []
+
+    for row in tasks_data:
+    
+        tasks.append(row["name"])
+    
+        time_history.append(row["duration"])
+
+    return tasks, time_history
     
 @app.route('/')
 def home():
@@ -62,14 +74,13 @@ def home():
 
 @app.route('/history')
 def history():
-    # return render_template('history.html')
     return redirect(url_for('daily_history'))
 
-@app.route('/insert', methods = ['POST', 'GET'])
+@app.route('/insert')
 def insert_task():
-
-    if 'task_name' in request.args:
-        task_name = request.args.get('task_name')
+    print(request.args)
+    if 'name' in request.args:
+        task_name = request.args.get('name')
         return render_template('log.html', task_name = task_name)
     
     return render_template('task.html')
@@ -79,9 +90,14 @@ def insert_task():
 def task_done():
     
     if 'name' in request.args and 'duration' in request.args:
+        duration_parts = request.args["duration"].split(":")
+        hours = int(duration_parts[0])
+        minutes = int(duration_parts[1]) / 60
+        duration = hours + minutes
+        duration = f'{duration:.2f}'
         conn = sqlite3.connect('taskHistory.db')
         cur = conn.cursor()
-        cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , request.args['duration'], datetime.now().date()) )
+        cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , duration, datetime.now().date()) )
         conn.commit()
         conn.close()
     
@@ -91,27 +107,21 @@ def task_done():
 @app.route('/daily')
 def daily_history():
     
-    tasks = ["Freelancing", "Amal", "Household", "Others", "Naughty", "America","Asia","Pakistan", "India","China", "Afghanistan","Iran"]
-    
-    time_history = [12, 19, 3, 5, 2,1,20,6,11,30,4,2]
-    
+    tasks, time_history = get_task_history('Daily')
+
     return render_template('history.html', status = 'Daily', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
 
 @app.route('/monthly')
 def monthly_history():
 
-    tasks = ["Freelancing", "Amal", "Household", "Others"]
-    
-    time_history = [12, 19, 3, 5, 2]
+    tasks, time_history = get_task_history('Monthly')
 
     return render_template('history.html', status = 'Monthly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
 
 @app.route('/yearly')
 def yearly_history():
     
-    tasks = ["Freelancing", "Amal", "Household", "Others"]
-    
-    time_history = [12, 19, 3, 5, 2]
+    tasks, time_history = get_task_history('Yearly')
     
     return render_template('history.html', status = 'Yearly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
 

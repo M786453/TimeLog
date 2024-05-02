@@ -47,20 +47,14 @@ function stopStopwatch() {
 }
 
 // Function to reset the stopwatch
-function resetStopwatch() {
+function task_done() {
 
     clearInterval(interval);
     
     currentTime = 0;
+
+    window.location.href = '/task_done?name=' + document.getElementById('name').innerText + '&duration=' + document.getElementById('display').innerText
     
-    document.getElementById('display').innerText = '00:00:00';
-   
-    document.getElementById('btnPlay').classList.remove('clicked')
-
-    document.getElementById('btnStop').classList.remove('clicked')
-
-    document.getElementById('btnDone').classList.add('clicked')
-
 }
 
 

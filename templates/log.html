@@ -30,14 +30,14 @@
 
         <div id="log">
 
-            <div id="title">{{ task_name }}</div>
+            <div id="name">{{ task_name }}</div>
 
             <div id="display">00:00:00</div>
 
             <div class="log-actions">
                 <i class="fas fa-stop" id="btnStop" onclick="stopStopwatch()"></i>
                 <i class="fas fa-play" id="btnPlay" onclick="startStopwatch()"></i>
-                <i class="fas fa-check" id="btnDone" onclick="resetStopwatch()"></i>
+                <i class="fas fa-check" id="btnDone" onclick="task_done()"></i>
             </div>
             
         </div>
