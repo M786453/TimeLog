@@ -28,9 +28,9 @@
     <!-- ACTIONS -->
 
     <div class="chart_actions_div">
-        <a class="chart_action" href="/daily">DAILY</a>
-        <a class="chart_action" href="/monthly">Monthly</a>
-        <a class="chart_action" href="/yearly">Yearly</a>
+        <a class="chart_action{% if status == 'Daily'%} clicked{% endif %}" href="/daily" >DAILY</a>
+        <a class="chart_action{% if status == 'Monthly'%} clicked{% endif %}" href="/monthly">Monthly</a>
+        <a class="chart_action{% if status == 'Yearly'%} clicked{% endif %}" href="/yearly">Yearly</a>
     </div>
 
     <!-- ACTIONS -->
@@ -38,7 +38,7 @@
     <!-- CHART -->
 
     <div class="chart_area">
-        <canvas id="dailyChart" width="100" height="100"></canvas>
+        <canvas id="chart" width="100" height="100"></canvas>
     </div>
     <!-- CHART -->
 
@@ -46,28 +46,16 @@
 
     <script>
         // Get the context of the canvas element we want to select
-        var ctx = document.getElementById('dailyChart').getContext('2d');
+        var ctx = document.getElementById('chart').getContext('2d');
         
         // Define the data
         var data = {
-          labels: ['January', 'February', 'March', 'April', 'May'],
+          labels: {{ tasks|safe }},
           datasets: [{
-            label: 'Daily History',
-            data: [12, 19, 3, 5, 2],
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)'
-            ],
+            label: '{{status}} History',
+            data: {{ time_history }},
+            backgroundColor: {{ bg_colors|safe }},
+            borderColor: {{ borders|safe }},
             borderWidth: 1
           }]
         };
