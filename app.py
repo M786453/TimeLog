@@ -88,8 +88,11 @@ def insert_task():
    
 @app.route('/task_done')
 def task_done():
+
+    tasks_list, durations_list = get_task_history('Daily')
     
     if 'name' in request.args and 'duration' in request.args:
+        task_name = request.args["name"]
         duration_parts = request.args["duration"].split(":")
         hours = int(duration_parts[0])
         minutes = int(duration_parts[1]) / 60
@@ -97,7 +100,12 @@ def task_done():
         duration = f'{duration:.2f}'
         conn = sqlite3.connect('taskHistory.db')
         cur = conn.cursor()
-        cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , duration, datetime.now().date()) )
+        if task_name in tasks_list:
+            old_duration = durations_list[tasks_list.index(task_name)]
+            new_duration = old_duration + float(duration)
+            cur.execute('UPDATE Task_History SET duration = ? WHERE name = ?' , (new_duration, task_name))
+        else:
+            cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , duration, datetime.now().date()) )
         conn.commit()
         conn.close()
     
