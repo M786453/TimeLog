@@ -66,7 +66,29 @@ def get_task_history(mode):
     
         time_history.append(row["duration"])
 
-    return tasks, time_history
+    # Combining tasks having same names
+
+    unique_tasks = set(tasks)
+
+    unique_tasks_duration = []
+
+    for t in unique_tasks:
+
+        index = 0
+
+        duration = 0.0
+
+        while index < len(tasks):
+
+            if tasks[index] == t:
+
+                duration += float(time_history[index])
+            
+            index += 1
+        
+        unique_tasks_duration.append(str(duration))
+                
+    return unique_tasks, unique_tasks_duration
     
 @app.route('/')
 def home():
@@ -130,7 +152,7 @@ def monthly_history():
 def yearly_history():
     
     tasks, time_history = get_task_history('Yearly')
-    
+
     return render_template('history.html', status = 'Yearly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
 
 if __name__ == "__main__":
