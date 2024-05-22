@@ -86,9 +86,9 @@ def get_task_history(mode):
             
             index += 1
         
-        unique_tasks_duration.append(str(duration))
+        unique_tasks_duration.append(duration)
                 
-    return unique_tasks, unique_tasks_duration
+    return list(unique_tasks), unique_tasks_duration
     
 @app.route('/')
 def home():
