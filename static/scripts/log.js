@@ -17,7 +17,9 @@ let interval;
 // Function to update the display
 function updateDisplay() {
     const elapsed = Date.now() - startTime + currentTime;
-    document.getElementById('display').innerText = formatTime(elapsed);
+    const formated_time = formatTime(elapsed);
+    document.getElementById('display').innerText = formated_time;
+    task_update();
 }
 
 // Function to start the stopwatch
@@ -46,14 +48,32 @@ function stopStopwatch() {
     
 }
 
-// Function to reset the stopwatch
+// Function to update task duration in database in realtime
+function task_update() {
+
+    console.log(window.location.protocol + "//" + window.location.hostname + "/task_update?name=" + document.getElementById('name').innerText + "&duration=00:00:01" + "&status=update");
+
+    fetch(window.location.protocol + "//" + window.location.hostname + "/task_update?name=" + document.getElementById('name').innerText + "&duration=00:00:01" + "&status=update").then(response =>{
+        if(!response.ok){
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.text();
+    }).then(data => {
+        console.log(data);
+    }).catch(error => {
+        console.error("There has been a problem with your fetch operation:", error);
+    });
+    
+}
+
+// Function to reset the stopwatch and redirect the use to home page
 function task_done() {
 
     clearInterval(interval);
     
     currentTime = 0;
 
-    window.location.href = '/task_done?name=' + document.getElementById('name').innerText + '&duration=' + document.getElementById('display').innerText
+    window.location.href = '/'
     
 }
 

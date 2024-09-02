@@ -108,8 +108,8 @@ def insert_task():
     return render_template('task.html')
 
    
-@app.route('/task_done')
-def task_done():
+@app.route('/task_update')
+def task_update():
 
     tasks_list, durations_list = get_task_history('Daily')
     
@@ -130,6 +130,12 @@ def task_done():
             cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , duration, datetime.now().date()) )
         conn.commit()
         conn.close()
+
+        if 'status' in request.args:
+
+            if request.args['status'] == 'update':
+
+                return 'Task Updated.'
     
     return redirect(url_for('home'))
 
