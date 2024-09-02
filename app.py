@@ -119,26 +119,25 @@ def task_update():
     if 'name' in request.args and 'duration' in request.args:
         task_name = request.args["name"]
         duration_parts = request.args["duration"].split(":")
+        
         hours = int(duration_parts[0])
         minutes = int(duration_parts[1]) / 60
         duration = hours + minutes
         duration = f'{duration:.2f}'
         conn = sqlite3.connect('taskHistory.db')
         cur = conn.cursor()
+        
         if task_name in tasks_list:
             old_duration = durations_list[tasks_list.index(task_name)]
             new_duration = old_duration + float(duration)
             cur.execute('UPDATE Task_History SET duration = ? WHERE name = ?' , (new_duration, task_name))
         else:
             cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , duration, datetime.now().date()) )
+        
         conn.commit()
         conn.close()
 
-        if 'status' in request.args:
-
-            if request.args['status'] == 'update':
-
-                return 'Task Updated.'
+        return 'Task Updated.'
     
     return redirect(url_for('home'))
 

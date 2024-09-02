@@ -19,7 +19,10 @@ function updateDisplay() {
     const elapsed = Date.now() - startTime + currentTime;
     const formated_time = formatTime(elapsed);
     document.getElementById('display').innerText = formated_time;
-    task_update();
+    
+    if(parseInt(elapsed / 1000)%60 == 0)
+        task_update();
+    
 }
 
 // Function to start the stopwatch
@@ -51,9 +54,9 @@ function stopStopwatch() {
 // Function to update task duration in database in realtime
 function task_update() {
 
-    console.log(window.location.protocol + "//" + window.location.hostname + "/task_update?name=" + document.getElementById('name').innerText + "&duration=00:00:01" + "&status=update");
+    console.log(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/task_update?name=" + document.getElementById('name').innerText + "&duration=00:01:00");
 
-    fetch(window.location.protocol + "//" + window.location.hostname + "/task_update?name=" + document.getElementById('name').innerText + "&duration=00:00:01" + "&status=update").then(response =>{
+    fetch(window.location.protocol + "//" + window.location.hostname + ":" + window.location.port + "/task_update?name=" + document.getElementById('name').innerText + "&duration=00:01:00").then(response =>{
         if(!response.ok){
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -72,6 +75,8 @@ function task_done() {
     clearInterval(interval);
     
     currentTime = 0;
+
+    task_update(); // update task time in database
 
     window.location.href = '/'
     
