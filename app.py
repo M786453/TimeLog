@@ -1,8 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app) # Enable cors for all routes
 
 bg_colors = [
               'rgba(255, 99, 132, 0.2)',
@@ -108,28 +111,33 @@ def insert_task():
     return render_template('task.html')
 
    
-@app.route('/task_done')
-def task_done():
+@app.route('/task_update')
+def task_update():
 
     tasks_list, durations_list = get_task_history('Daily')
     
     if 'name' in request.args and 'duration' in request.args:
         task_name = request.args["name"]
         duration_parts = request.args["duration"].split(":")
+        
         hours = int(duration_parts[0])
         minutes = int(duration_parts[1]) / 60
         duration = hours + minutes
         duration = f'{duration:.2f}'
         conn = sqlite3.connect('taskHistory.db')
         cur = conn.cursor()
+        
         if task_name in tasks_list:
             old_duration = durations_list[tasks_list.index(task_name)]
             new_duration = old_duration + float(duration)
             cur.execute('UPDATE Task_History SET duration = ? WHERE name = ?' , (new_duration, task_name))
         else:
             cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , duration, datetime.now().date()) )
+        
         conn.commit()
         conn.close()
+
+        return 'Task Updated.'
     
     return redirect(url_for('home'))
 
