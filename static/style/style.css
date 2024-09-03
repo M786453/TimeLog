@@ -3,6 +3,7 @@ body{
     padding: 0;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     background-color: black;
+    color: gray;
 }
 
 #header{
@@ -121,5 +122,8 @@ input{
     height: 300px !important;
 }
 
+.total_hours{
+    text-align: center;
+}
 
 /** HISTORY **/
