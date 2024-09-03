@@ -57,6 +57,8 @@ def get_task_history(mode):
 
     # Data segregation
 
+    total_hours = 0.0
+
     tasks_data = cur.fetchall()
 
     tasks = []
@@ -68,6 +70,8 @@ def get_task_history(mode):
         tasks.append(row["name"])
     
         time_history.append(row["duration"])
+
+        total_hours += float(row["duration"])
 
     # Combining tasks having same names
 
@@ -91,7 +95,7 @@ def get_task_history(mode):
         
         unique_tasks_duration.append(duration)
                 
-    return list(unique_tasks), unique_tasks_duration
+    return list(unique_tasks), unique_tasks_duration, round(total_hours, 1)
     
 @app.route('/')
 def home():
@@ -145,23 +149,23 @@ def task_update():
 @app.route('/daily')
 def daily_history():
     
-    tasks, time_history = get_task_history('Daily')
+    tasks, time_history, total_hours = get_task_history('Daily')
 
-    return render_template('history.html', status = 'Daily', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
+    return render_template('history.html', status = 'Daily', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders, total_hours = total_hours)
 
 @app.route('/monthly')
 def monthly_history():
 
-    tasks, time_history = get_task_history('Monthly')
+    tasks, time_history, total_hours = get_task_history('Monthly')
 
-    return render_template('history.html', status = 'Monthly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
+    return render_template('history.html', status = 'Monthly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders, total_hours=total_hours)
 
 @app.route('/yearly')
 def yearly_history():
     
-    tasks, time_history = get_task_history('Yearly')
+    tasks, time_history, total_hours = get_task_history('Yearly')
 
-    return render_template('history.html', status = 'Yearly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders)
+    return render_template('history.html', status = 'Yearly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders, total_hours=total_hours)
 
 if __name__ == "__main__":
     create_task_table()
