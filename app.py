@@ -134,9 +134,15 @@ def task_update():
         if task_name in tasks_list:
             old_duration = durations_list[tasks_list.index(task_name)]
             new_duration = old_duration + float(duration)
-            cur.execute('UPDATE Task_History SET duration = ? WHERE name = ?' , (new_duration, task_name))
+
+            current_date = datetime.now().date()
+
+            cur.execute('UPDATE Task_History SET duration = ? WHERE name = ? AND date = ?' , (new_duration, task_name, current_date))
+
         else:
+            
             cur.execute('INSERT INTO Task_History (name, duration, date) values (?,?,?)' , (request.args['name'] , duration, datetime.now().date()) )
+
         
         conn.commit()
         conn.close()
