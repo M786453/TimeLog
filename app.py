@@ -118,7 +118,7 @@ def insert_task():
 @app.route('/task_update')
 def task_update():
 
-    tasks_list, durations_list = get_task_history('Daily')
+    tasks_list, durations_list, total_hours = get_task_history('Daily')
     
     if 'name' in request.args and 'duration' in request.args:
         task_name = request.args["name"]
