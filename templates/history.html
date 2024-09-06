@@ -39,12 +39,31 @@
     <div class="total_hours">Total Hours: {{ total_hours }}</div>
     <!-- TOTAL HOURS -->
 
-    <!-- CHART -->
+    <div class="container">
 
-    <div class="chart_area">
-        <canvas id="chart" width="100" height="100"></canvas>
+      <!-- LIST -->
+
+      <div class="scrollable-list">
+
+        <ul>
+          {% for task in tasks %}
+          <li><a class="chart_action" href="/history/{{ task }}" >{{ task }}</a></li>
+          {% endfor %}
+        </ul>
+
+      </div>
+
+      <!-- LIST -->
+
+      <!-- CHART -->
+
+      <div class="chart_area">
+          <canvas id="chart" width="100" height="100"></canvas>
+      </div>
+
+      <!-- CHART -->
+
     </div>
-    <!-- CHART -->
 
     <!-- SCRIPT -->
 
