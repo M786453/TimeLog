@@ -28,7 +28,9 @@ def create_task_table():
     conn.commit()
     conn.close()
 
-def get_task_history(mode):
+def get_task_history(mode, task_name):
+
+    total_hours = 0.0
 
     conn = sqlite3.connect('taskHistory.db')
 
@@ -36,64 +38,87 @@ def get_task_history(mode):
     
     cur = conn.cursor()
 
-    if mode == 'Daily':
-
-        current_date = datetime.now().date()
-
-        cur.execute("SELECT name, duration FROM Task_History WHERE date = ?", (current_date, ))
-        
-    
-    elif mode == "Monthly":
-
-        current_year_month = datetime.now().strftime('%Y-%m')
-
-        cur.execute("SELECT name, duration FROM Task_History WHERE date LIKE ?", (f'{current_year_month}%',))
-
-    elif mode == "Yearly":
-
-        current_year = datetime.now().date().year
-
-        cur.execute("SELECT name, duration FROM Task_History WHERE date LIKE ?", (f'{current_year}%',))
-
-    # Data segregation
-
-    total_hours = 0.0
-
-    tasks_data = cur.fetchall()
-
-    tasks = []
-
-    time_history = []
-
-    for row in tasks_data:
-    
-        tasks.append(row["name"])
-    
-        time_history.append(row["duration"])
-
-        total_hours += float(row["duration"])
-
-    # Combining tasks having same names
-
-    unique_tasks = set(tasks)
-
-    unique_tasks_duration = []
-
-    for t in unique_tasks:
-
-        index = 0
-
-        duration = 0.0
-
-        while index < len(tasks):
-
-            if tasks[index] == t:
-
-                duration += float(time_history[index])
+    if task_name:
             
-            index += 1
+        cur.execute("SELECT date, duration FROM Task_History WHERE name = ?", (task_name,))
+
+        # Data segregation
+
+        tasks_data = cur.fetchall()
+
+        dates = []
+
+        time_history = []
+
+        for row in tasks_data:
         
-        unique_tasks_duration.append(duration)
+            dates.append(row["date"])
+        
+            time_history.append(row["duration"])
+
+            total_hours += float(row["duration"])
+
+        return dates, time_history, round(total_hours, 1)
+    
+    else:
+
+        unique_tasks = set()
+
+        unique_tasks_duration = []
+
+        if mode == 'Daily':
+
+            current_date = datetime.now().date()
+
+            cur.execute("SELECT name, duration FROM Task_History WHERE date = ?", (current_date, ))
+            
+        elif mode == "Monthly":
+
+            current_year_month = datetime.now().strftime('%Y-%m')
+
+            cur.execute("SELECT name, duration FROM Task_History WHERE date LIKE ?", (f'{current_year_month}%',))
+
+        elif mode == "Yearly":
+
+            current_year = datetime.now().date().year
+
+            cur.execute("SELECT name, duration FROM Task_History WHERE date LIKE ?", (f'{current_year}%',))
+
+        # Data segregation
+
+        tasks_data = cur.fetchall()
+
+        tasks = []
+
+        time_history = []
+
+        for row in tasks_data:
+        
+            tasks.append(row["name"])
+        
+            time_history.append(row["duration"])
+
+            total_hours += float(row["duration"])
+
+        # Combining tasks having same names
+
+        unique_tasks = set(tasks)
+
+        for t in unique_tasks:
+
+            index = 0
+
+            duration = 0.0
+
+            while index < len(tasks):
+
+                if tasks[index] == t:
+
+                    duration += float(time_history[index])
+                
+                index += 1
+            
+            unique_tasks_duration.append(duration)
                 
     return list(unique_tasks), unique_tasks_duration, round(total_hours, 1)
     
@@ -118,7 +143,7 @@ def insert_task():
 @app.route('/task_update')
 def task_update():
 
-    tasks_list, durations_list, total_hours = get_task_history('Daily')
+    tasks_list, durations_list, total_hours = get_task_history('Daily', '')
     
     if 'name' in request.args and 'duration' in request.args:
         task_name = request.args["name"]
@@ -151,25 +176,35 @@ def task_update():
     
     return redirect(url_for('home'))
 
+@app.route('/task_history')
+def task_history():
+
+    task_name = request.args['name']
+
+    mode = request.args['mode']
+
+    tasks, time_history, total_hours = get_task_history(mode, task_name)
+
+    return render_template('history.html', status = mode, tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders, total_hours = total_hours, task_name = task_name)
 
 @app.route('/daily')
 def daily_history():
     
-    tasks, time_history, total_hours = get_task_history('Daily')
+    tasks, time_history, total_hours = get_task_history('Daily', '')
 
     return render_template('history.html', status = 'Daily', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders, total_hours = total_hours)
 
 @app.route('/monthly')
 def monthly_history():
 
-    tasks, time_history, total_hours = get_task_history('Monthly')
+    tasks, time_history, total_hours = get_task_history('Monthly', '')
 
     return render_template('history.html', status = 'Monthly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders, total_hours=total_hours)
 
 @app.route('/yearly')
 def yearly_history():
     
-    tasks, time_history, total_hours = get_task_history('Yearly')
+    tasks, time_history, total_hours = get_task_history('Yearly', '')
 
     return render_template('history.html', status = 'Yearly', tasks=tasks, time_history=time_history, bg_colors=bg_colors, borders=borders, total_hours=total_hours)
 
