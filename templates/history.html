@@ -43,17 +43,25 @@
 
       <!-- LIST -->
 
-      {% if tasks %}
+      {% if status != 'Daily' %}
 
-      <div class="scrollable-list">
+        {% if not task_name %}
 
-        <ul>
-          {% for task in tasks %}
-          <li><a class="chart_action" href="/history/{{ task }}" style="width: 100px;">{{ task }}</a></li>
-          {% endfor %}
-        </ul>
+          {% if tasks %}
 
-      </div>
+          <div class="scrollable-list">
+
+            <ul>
+              {% for task in tasks %}
+              <li><a class="chart_action" href="/task_history?name={{ task }}&mode={{ status }}" style="width: 100px;">{{ task }}</a></li>
+              {% endfor %}
+            </ul>
+
+          </div>
+
+          {% endif %}
+
+        {% endif %}
 
       {% endif %}
 
@@ -79,7 +87,11 @@
         var data = {
           labels: {{ tasks|safe }},
           datasets: [{
-            label: '{{status}} History',
+            {% if task_name %}
+              label: '{{task_name}} History',
+            {% else %}
+              label: '{{status}} History',
+            {% endif %}
             data: {{ time_history }},
             backgroundColor: {{ bg_colors|safe }},
             borderColor: {{ borders|safe }},
