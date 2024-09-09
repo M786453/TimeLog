@@ -39,8 +39,18 @@ def get_task_history(mode, task_name):
     cur = conn.cursor()
 
     if task_name:
-            
-        cur.execute("SELECT date, duration FROM Task_History WHERE name = ?", (task_name,))
+
+        if mode == "Monthly":
+
+            current_year_month = datetime.now().strftime('%Y-%m')
+
+            cur.execute("SELECT date, duration FROM Task_History WHERE name = ? AND date LIKE ?", (task_name, f'{current_year_month}%',))
+
+        elif mode == "Yearly":
+
+            current_year = datetime.now().date().year
+
+            cur.execute("SELECT date, duration FROM Task_History WHERE name = ? AND date LIKE ?", (task_name, f'{current_year}%',))
 
         # Data segregation
 
@@ -51,13 +61,13 @@ def get_task_history(mode, task_name):
         time_history = []
 
         for row in tasks_data:
-        
-            dates.append(row["date"])
-        
-            time_history.append(row["duration"])
 
-            total_hours += float(row["duration"])
+                dates.append(row["date"])
+            
+                time_history.append(row["duration"])
 
+                total_hours += float(row["duration"])
+        
         return dates, time_history, round(total_hours, 1)
     
     else:
